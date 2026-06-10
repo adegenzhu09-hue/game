@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Player</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="../index.html">← Trang chủ</a>
+    </nav>
+
+    <div class="player-container" id="playerContainer">
+        <!-- JS sẽ điền nội dung -->
+    </div>
+
+    <script type="module">
+        import { db, storage } from '../js/firebase-config.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+        import { ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-storage.js";
+        import { auth } from '../js/firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('id');
+
+        async function loadPlayer() {
+            const container = document.getElementById('playerContainer');
+            if (!storyId) {
+                container.innerHTML = '<h2>Không tìm thấy truyện</h2>';
+                return;
+            }
+
+            const storyDoc = await getDoc(doc(db, "stories", storyId));
+            if (!storyDoc.exists()) {
+                container.innerHTML = '<h2>Truyện không tồn tại</h2>';
+                return;
+            }
+
+            const story = storyDoc.data();
+            
+            // Kiểm tra premium
+            const user = auth.currentUser;
+            let isPremium = false;
+            if (user) {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                isPremium = userDoc.data()?.premium || false;
+            }
+
+            if (story.isPremium && !isPremium) {
+                container.innerHTML = `
+                    <h2>🔒 ${story.title}</h2>
+                    <p>Đây là nội dung Premium. Vui lòng <a href="premium.html">nâng cấp</a> để nghe.</p>
+                `;
+                return;
+            }
+
+            // Lấy URL audio từ Storage
+            const audioRef = ref(storage, story.audioPath);
+            const audioUrl = await getDownloadURL(audioRef);
+
+            container.innerHTML = `
+                <h1>${story.title}</h1>
+                <p>${story.author}</p>
+                <img src="${story.coverUrl}" alt="${story.title}" style="max-width:200px; border-radius:8px;">
+                <br>
+                <audio controls autoplay>
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    Trình duyệt không hỗ trợ audio.
+                </audio>
+                <p>${story.description || ''}</p>
+            `;
+        }
+
+        onAuthStateChanged(auth, () => {
+            loadPlayer();
+        });
+    </script>
+</body>
+</html>
