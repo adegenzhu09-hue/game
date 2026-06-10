@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="login-container" style="max-width:400px; margin: 100px auto; padding:2rem; background:white; border-radius:8px;">
+        <h2>Đăng nhập</h2>
+        <input type="email" id="email" placeholder="Email"><br><br>
+        <input type="password" id="password" placeholder="Mật khẩu"><br><br>
+        <button id="loginBtn">Đăng nhập</button>
+        <button id="registerBtn">Đăng ký</button>
+        <button id="googleBtn">Đăng nhập bằng Google</button>
+    </div>
+
+    <script type="module">
+        import { loginEmail, registerEmail, loginGoogle } from '../js/auth.js';
+
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            try {
+                await loginEmail(email, pass);
+                window.location.href = '../index.html';
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            try {
+                await registerEmail(email, pass);
+                window.location.href = '../index.html';
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        });
+
+        document.getElementById('googleBtn').addEventListener('click', async () => {
+            try {
+                await loginGoogle();
+                window.location.href = '../index.html';
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
