@@ -6,12 +6,13 @@ import { getStorage } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-s
 
 // Cấu hình Firebase của bạn
 const firebaseConfig = {
-    apiKey: "AIzaSy...",
-    authDomain: "your-project.firebaseapp.com",
-    projectId: "your-project",
-    storageBucket: "your-project.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef"
+  apiKey: "AIzaSyBhOuDevCO_PBnfelqLJqdtvUy6GcIPuZU",
+  authDomain: "webaudio-3dad2.firebaseapp.com",
+  projectId: "webaudio-3dad2",
+  storageBucket: "webaudio-3dad2.firebasestorage.app",
+  messagingSenderId: "48114171053",
+  appId: "1:48114171053:web:b34f71972f5317f47fda24",
+  measurementId: "G-H1X0N1FH49"
 };
 
 // Initialize Firebase
