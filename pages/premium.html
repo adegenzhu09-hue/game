@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Nâng cấp Premium</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav><a href="../index.html">← Trang chủ</a></nav>
+    <div style="max-width:600px; margin:2rem auto; text-align:center;">
+        <h1>Gói Premium</h1>
+        <p>Nghe không giới hạn, không quảng cáo.</p>
+        <button id="upgradeBtn" style="padding:1rem 2rem; background:gold; border:none; border-radius:8px; font-size:1.2rem;">Nâng cấp ngay - 50.000đ/tháng</button>
+        <p><em>(Chức năng thanh toán sẽ được tích hợp sau)</em></p>
+        <script type="module">
+            // Tạm thời chưa có thanh toán, bạn có thể hard-code nâng cấp thủ công trong Firestore
+            import { auth, db } from '../js/firebase-config.js';
+            import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+            import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+
+            document.getElementById('upgradeBtn').addEventListener('click', async () => {
+                const user = auth.currentUser;
+                if (user) {
+                    await updateDoc(doc(db, "users", user.uid), { premium: true });
+                    alert('Nâng cấp thành công! (Demo)');
+                    window.location.href = '../index.html';
+                } else {
+                    alert('Vui lòng đăng nhập trước');
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
